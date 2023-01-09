@@ -1,8 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidateInputPipe } from './core/pipes/validate.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+
+  app.setGlobalPrefix('api');
+
+  app.useGlobalPipes(new ValidateInputPipe());
+
+  await app.listen(
+    process.env.APP_PORT ? parseInt(process.env.APP_PORT) : 3000,
+  );
 }
 bootstrap();
