@@ -1,20 +1,22 @@
 # PMTool-Cards-Backend
 
-## Installation
+## Installation for local development
 
-```bash
-$ npm install
+1. Set environment variables
+
+```
+cp .env.example .env
 ```
 
-## Running the app
+2. Start docker-containers
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
+docker-compose up -d
+```
+
+3. Connect to database
+   3.1. Open `localhost:8080` \
+   3.2. **Add new server** -> Input settings from `.env` -> **Save** \
+   3.3. Open database `pmtool-cards` (It's auto-created)
+
+**Have fun!**
