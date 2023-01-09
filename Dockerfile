@@ -8,7 +8,11 @@ WORKDIR /usr/src/app
 
 COPY --chown=node:node package*.json ./
 
-RUN npm ci --only=development
+RUN npm install -g @nestjs/cli
+
+RUN mkdir -m 777 /.npm
+
+RUN npm install --only=development
 
 COPY --chown=node:node . .
 
