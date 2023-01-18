@@ -10,20 +10,18 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, pass: string) {
-    // find if user exist with this email
-    const user = await this.userService.findOneByUsername(username);
+  async validateUser(email: string, pass: string) {
+    const user = await this.userService.findOne({ email });
+
     if (!user) {
       return null;
     }
 
-    // find if user password match
     const match = await this.comparePassword(pass, user.password);
     if (!match) {
       return null;
     }
 
-    // tslint:disable-next-line: no-string-literal
     const { password, ...result } = user['dataValues'];
     return result;
   }
@@ -34,34 +32,23 @@ export class AuthService {
   }
 
   public async create(user) {
-    // hash the password
     const pass = await this.hashPassword(user.password);
-
-    // create the user
     const newUser = await this.userService.create({ ...user, password: pass });
-
-    // tslint:disable-next-line: no-string-literal
     const { password, ...result } = newUser['dataValues'];
-
-    // generate token
     const token = await this.generateToken(result);
 
-    // return the user and the token
     return { user: result, token };
   }
 
   private async generateToken(user) {
-    const token = await this.jwtService.signAsync(user);
-    return token;
+    return await this.jwtService.signAsync(user);
   }
 
   private async hashPassword(password) {
-    const hash = await bcrypt.hash(password, 10);
-    return hash;
+    return await bcrypt.hash(password, 10);
   }
 
   private async comparePassword(enteredPassword, dbPassword) {
-    const match = await bcrypt.compare(enteredPassword, dbPassword);
-    return match;
+    return await bcrypt.compare(enteredPassword, dbPassword);
   }
 }

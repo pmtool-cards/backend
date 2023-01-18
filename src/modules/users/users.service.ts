@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { USER_REPOSITORY } from 'src/core/constants';
-import { UserDto } from './user.dto';
+import { UserDto } from './dto/user.dto';
 import { User } from './user.entity';
 
 @Injectable()
@@ -13,15 +13,28 @@ export class UsersService {
     return await this.userRepository.create<User>(user);
   }
 
-  async findOneByEmail(email: string): Promise<User> {
-    return await this.userRepository.findOne<User>({ where: { email } });
+  async findAll(where?: {}): Promise<User[]> {
+    return await this.userRepository.findAll<User>({
+      where: where || {},
+      attributes: { exclude: ['password'] },
+    });
   }
 
-  async findOneByUsername(username: string): Promise<User> {
-    return await this.userRepository.findOne<User>({ where: { username } });
+  async findOne(where: {}): Promise<User> {
+    return await this.userRepository.findOne<User>({ where });
   }
 
-  async findOneById(id: number): Promise<User> {
-    return await this.userRepository.findOne<User>({ where: { id } });
+  async update(id: number, data) {
+    const [numberOfAffectedRows, [updatedUser]] =
+      await this.userRepository.update(
+        { ...data },
+        { where: { id }, returning: true },
+      );
+
+    return { numberOfAffectedRows, updatedUser };
+  }
+
+  async delete(where: {}) {
+    return await this.userRepository.destroy({ where });
   }
 }

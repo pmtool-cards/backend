@@ -9,6 +9,18 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidateInputPipe());
 
+  app.enableCors({
+    credentials: true,
+    exposedHeaders: ['Authorization'],
+    origin: (origin, callback) => {
+      if (process.env.NODE_ENV == 'production' && origin.includes('http://')) {
+        callback(new Error('Not allowed by CORS'));
+      } else {
+        callback(null, true);
+      }
+    },
+  });
+
   await app.listen(
     process.env.APP_PORT ? parseInt(process.env.APP_PORT) : 3000,
   );
