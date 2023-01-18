@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { ValidateInputPipe } from './core/pipes/validate.pipe';
 
@@ -9,16 +10,12 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidateInputPipe());
 
+  app.use(cookieParser());
+
   app.enableCors({
     credentials: true,
     exposedHeaders: ['Authorization'],
-    origin: (origin, callback) => {
-      if (process.env.NODE_ENV == 'production' && origin.includes('http://')) {
-        callback(new Error('Not allowed by CORS'));
-      } else {
-        callback(null, true);
-      }
-    },
+    origin: process.env.FRONTEND_URL,
   });
 
   await app.listen(

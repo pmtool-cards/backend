@@ -1,3 +1,4 @@
+name: pmtool-cards-backend
 services:
   nestjs:
     build:
