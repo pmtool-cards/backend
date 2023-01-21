@@ -28,14 +28,20 @@ export class CardsController {
   ) {}
 
   @Get('ofcolumn/:columnId')
-  async findAllOfBoard(@Param('columnId') columnId: number, @Request() req) {
+  async findAllOfColumn(@Param('columnId') columnId: number, @Request() req) {
     const column = await this.columnService.findOne({ id: columnId });
 
     if (!column) {
       throw new NotFoundException('Column does not exist');
     }
 
-    if (column.board.userId !== req.user.id) {
+    const board = await this.boardService.findOne({ id: column.boardId });
+
+    if (!board) {
+      throw new NotFoundException('Board does not exist');
+    }
+
+    if (board.userId !== req.user.id) {
       throw new ForbiddenException('You cannot see cards of this board');
     }
 

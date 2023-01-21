@@ -8,4 +8,8 @@ export class CreateColumnDto {
   @IsNotEmpty()
   @Min(1)
   readonly boardId: number;
+
+  @IsNotEmpty()
+  @Min(0)
+  readonly order: number;
 }

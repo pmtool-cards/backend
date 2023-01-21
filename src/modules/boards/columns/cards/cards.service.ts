@@ -14,7 +14,10 @@ export class CardsService {
   }
 
   async findAll(where?: {}): Promise<Card[]> {
-    return await this.cardRepository.findAll<Card>({ where: where || {} });
+    return await this.cardRepository.findAll<Card>({
+      where: where || {},
+      order: [['order', 'ASC']],
+    });
   }
 
   async findOne(where: {}): Promise<Card> {

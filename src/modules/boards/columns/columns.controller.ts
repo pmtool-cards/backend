@@ -114,7 +114,9 @@ export class ColumnsController {
       throw new NotFoundException('Column does not exist');
     }
 
-    if (column.board.userId !== req.user.id) {
+    const board = await this.boardService.findOne({ id: column.boardId });
+
+    if (board.userId !== req.user.id) {
       throw new ForbiddenException('You cannot remove columns from this board');
     }
 

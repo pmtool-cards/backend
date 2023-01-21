@@ -4,6 +4,7 @@ import { BoardDto } from './dto/board.dto';
 import { User } from '../users/user.entity';
 import { BOARD_REPOSITORY } from '../../core/constants';
 import { Column } from './columns/column.entity';
+import { Card } from './columns/cards/card.entity';
 
 @Injectable()
 export class BoardsService {
@@ -20,7 +21,7 @@ export class BoardsService {
       where: where || {},
       include: [
         { model: User, attributes: { exclude: ['password'] } },
-        { model: Column },
+        { model: Column, include: [{ model: Card }] },
       ],
     });
   }
@@ -30,7 +31,12 @@ export class BoardsService {
       where,
       include: [
         { model: User, attributes: { exclude: ['password'] } },
-        { model: Column },
+        {
+          model: Column,
+          separate: true,
+          order: [['order', 'ASC']],
+          include: [{ model: Card, order: [['order', 'ASC']] }],
+        },
       ],
     });
   }

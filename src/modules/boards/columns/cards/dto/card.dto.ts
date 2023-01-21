@@ -10,4 +10,8 @@ export class CardDto {
   @IsNotEmpty()
   @Min(1)
   readonly columnId: number;
+
+  @IsNotEmpty()
+  @Min(0)
+  readonly order: number;
 }

@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { COLUMN_REPOSITORY } from 'src/core/constants';
+import { Card } from './cards/card.entity';
 import { Column } from './column.entity';
 import { CreateColumnDto } from './dto/create-column.dto';
 import { UpdateColumnDto } from './dto/update-column.dto';
@@ -15,7 +16,11 @@ export class ColumnsService {
   }
 
   async findAll(where?: {}): Promise<Column[]> {
-    return await this.columnRepository.findAll<Column>({ where: where || {} });
+    return await this.columnRepository.findAll<Column>({
+      where: where || {},
+      order: [['order', 'ASC']],
+      include: [{ model: Card, order: [['order', 'ASC']] }],
+    });
   }
 
   async findOne(where: {}): Promise<Column> {
